@@ -1,0 +1,56 @@
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/app/services/dbConfig";
+import sql from "mssql";
+export const POST = async (req: Request) => {
+    try {
+        const { districtName } = await req.json();
+
+        // Validate the input data
+        if (!isValidData(districtName)) {
+            return NextResponse.json(
+                { message: "Invalid form submitted" },
+                { status: 400 }
+            );
+        }
+        const pool = await connectToDatabase();
+        const district = await pool.request()
+            .query(`
+            IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Districts')
+            BEGIN
+                CREATE TABLE Districts (
+                    id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+                    districtName VARCHAR(255) NOT NULL UNIQUE
+                );
+            END`
+            );
+        // Insert the new district into the Districts table
+        if (district) {
+            await pool.request()
+                .input("districtName", sql.VarChar, districtName?.trim())
+                .query("INSERT INTO Districts (districtName) OUTPUT inserted.* VALUES (@districtName)")
+        }
+        return NextResponse.json(
+            { message: "District created successfully" },
+            { status: 201 }
+        );
+    } catch (error: any) {
+        if (error.message.includes("Violation of UNIQUE KEY constraint") || error.message.includes("duplicate key")) {
+            return NextResponse.json(
+                { message: "District already exists" },
+                { status: 409 }
+            );
+        }
+        // Handle unexpected errors
+        console.log(error)
+        return NextResponse.json(
+            { message: "Internal server error. Please try again later." },
+            { status: 500 }
+        );
+    }
+};
+
+const isValidData = (districtName: string): boolean => {
+    return (
+        districtName?.trim().length > 0
+    );
+};

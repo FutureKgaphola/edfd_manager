@@ -1,0 +1,102 @@
+
+import { customsubmitTheme } from "@/app/SiteTheme/Theme";
+import { Button, Card } from "flowbite-react";
+import Image from "next/image";
+import user from '../../assets/images/user.png';
+import axios from "axios";
+import { failureMessage, successMessage } from "@/app/notifications/successError";
+import { useQueryClient } from "@tanstack/react-query";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { OriginatorSliceAction } from "@/lib/features/assignOriginator/originator";
+import useApplications from "@/app/hooks/useApplications";
+import { DistrictDataSliceAction } from "@/lib/features/DistrictApplications/districtSlice";
+
+export function ListLoanOriginators() {
+
+const Rowprop = useSelector((state: RootState) => state.OriginatorSliceReducer);
+let id: string | null = null;
+const dispatch = useDispatch();
+const {data,isLoading,error}=useApplications();
+if(Rowprop.slectedApplication_Row!== null){
+  id = Rowprop.slectedApplication_Row?.id ?? null;
+}
+const queryClient = useQueryClient();
+  const Employess=[
+    {
+      empno: "110987",
+      empName: "Bonnie Green"
+    },
+    {
+      empno: "110875",
+      empName: "Michael Gough"
+    },
+    {
+      empno: "110871",
+      empName: "Lana Byrd"
+    },
+    {
+      empno: "110866",
+      empName: "Thomes Lean"
+    }
+  ]
+  
+  const AssignLoanOriginator = async (item: any) => {
+    try {
+      const resp = await axios.patch(`/api/applications/assign`, {
+        empno: item.empno,
+        id: id,
+      })
+
+      if (resp.status === 200) {
+        successMessage(resp.data.message);
+        queryClient.invalidateQueries({ queryKey: ["applications"] });
+        dispatch(OriginatorSliceAction.PoupUpModal_Originators({ isShowList:false,slectedApplication_Row:{amount:'',applicationRef:'',companyName:'',create_date:'',districtId:'',empno:'',id:'',last_update:'',loanDocs:'',message:'',outcome:'',regNo:'',stageAt:'',status:'',user_email:''} }))
+        dispatch(DistrictDataSliceAction.PopulateTable({ isShowTable: false, TableData:[] }))
+        console.log("Loan Originator Assigned Successfully");
+      } else {
+        failureMessage(resp.data.message);
+        console.error("Error assigning Loan Originator", resp);
+      }
+    } catch (error) {
+      console.log(error);
+      failureMessage("Failed to assign loan originator");
+    }
+  }
+  return (
+    <Card className="max-w-sm">
+      <div className="mb-4 flex flex-col items-center justify-between">
+        <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Loan Originators</h5>
+        <p className="text-sm font-medium text-cyan-600 hover:underline dark:text-cyan-500">
+          Mopani District
+        </p>
+      </div>
+      <div className="flow-root">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+          {
+            Employess.map((item, index) => (
+              <li key={index} className="py-3 sm:py-4">
+                <div className="flex items-center space-x-4">
+                  <div className="shrink-0">
+                    <Image
+                      alt="Neil image"
+                      height="32"
+                      src={user}
+                      width="32"
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{item.empName}</p>
+                    <p className="truncate text-sm text-gray-500 dark:text-gray-400">{item.empno}</p>
+                  </div>
+                  <Button onClick={() => AssignLoanOriginator(item)} theme={customsubmitTheme} color="success" size="xs">Assign</Button>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </Card>
+  );
+}
