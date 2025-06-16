@@ -35,6 +35,8 @@ export function ApplicationsTable({ data }: { data: any }) {
     }
   };
 
+  
+
   return (
     <div className="overflow-x-auto p-1">
       {/* Search Bar */}
@@ -73,7 +75,7 @@ export function ApplicationsTable({ data }: { data: any }) {
               <TableCell>{item?.applicationRef}</TableCell>
               <TableCell>R{Number(item?.amount).toFixed(2)}</TableCell>
               <TableCell>{item?.loanDocs}</TableCell>
-              <TableCell>{item?.create_date}</TableCell>
+              <TableCell>{ new Date(item?.create_date).toLocaleString()}</TableCell>
               <TableCell>{item?.empno}</TableCell>
               <TableCell>
                 {item?.empno && item?.empno=="00000000" ? (<Button

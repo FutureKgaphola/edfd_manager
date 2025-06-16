@@ -9,43 +9,39 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { OriginatorSliceAction } from "@/lib/features/assignOriginator/originator";
-import useApplications from "@/app/hooks/useApplications";
 import { DistrictDataSliceAction } from "@/lib/features/DistrictApplications/districtSlice";
+import useOriginators from "@/app/hooks/useOriginators";
 
 export function ListLoanOriginators() {
 
 const Rowprop = useSelector((state: RootState) => state.OriginatorSliceReducer);
 let id: string | null = null;
+let districtId: string | null = null;
+let managerId: string | null = null;
 const dispatch = useDispatch();
-const {data,isLoading,error}=useApplications();
+const magerData = useSelector((state: RootState) => state.AuthReducer);
+
+if (magerData?.user?.id !== null) {
+  managerId = magerData?.user?.id ?? null;
+}
+
+const distData = useSelector((state: RootState) => state.DistrictDataSliceReducer);
+if(distData?.TableData[0]?.districtId!== null){
+  districtId = distData?.TableData[0]?.districtId ?? null;
+}
+const {data,isLoading}=useOriginators(districtId ?? ''); // Fetch originators based on districtId
+
 if(Rowprop.slectedApplication_Row!== null){
   id = Rowprop.slectedApplication_Row?.id ?? null;
 }
 const queryClient = useQueryClient();
-  const Employess=[
-    {
-      empno: "110987",
-      empName: "Bonnie Green"
-    },
-    {
-      empno: "110875",
-      empName: "Michael Gough"
-    },
-    {
-      empno: "110871",
-      empName: "Lana Byrd"
-    },
-    {
-      empno: "110866",
-      empName: "Thomes Lean"
-    }
-  ]
-  
+
   const AssignLoanOriginator = async (item: any) => {
     try {
       const resp = await axios.patch(`/api/applications/assign`, {
         empno: item.empno,
-        id: id,
+        id: id, // Application ID to assign the originator to
+        managerId: managerId?.toString(), // Manager ID from the logged-in user
       })
 
       if (resp.status === 200) {
@@ -63,6 +59,15 @@ const queryClient = useQueryClient();
       failureMessage("Failed to assign loan originator");
     }
   }
+  if (isLoading) {
+    return (
+      <Card className="max-w-sm">
+        <div className="flex items-center justify-center h-32">
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      </Card>
+    );
+  }
   return (
     <Card className="max-w-sm">
       <div className="mb-4 flex flex-col items-center justify-between">
@@ -74,8 +79,8 @@ const queryClient = useQueryClient();
       <div className="flow-root">
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {
-            Employess.map((item, index) => (
-              <li key={index} className="py-3 sm:py-4">
+            data?.originators?.map((item:any) => (
+              <li key={item?.id} className="py-3 sm:py-4">
                 <div className="flex items-center space-x-4">
                   <div className="shrink-0">
                     <Image
@@ -87,7 +92,7 @@ const queryClient = useQueryClient();
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{item.empName}</p>
+                    <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{item.fullnames}</p>
                     <p className="truncate text-sm text-gray-500 dark:text-gray-400">{item.empno}</p>
                   </div>
                   <Button onClick={() => AssignLoanOriginator(item)} theme={customsubmitTheme} color="success" size="xs">Assign</Button>
