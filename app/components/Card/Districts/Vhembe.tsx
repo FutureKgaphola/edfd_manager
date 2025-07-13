@@ -13,7 +13,7 @@ const Vhembe = ({ data, isLoading }: { data: any, isLoading: boolean }) => {
             <Image src={note} className="h-12 w-12 self-center" alt="User Icon" />
             {isLoading ? (<Spinner size="sm" aria-label="Info spinner example" className="me-3" light />) : <Button onClick={() => dispatch(DistrictDataSliceAction.PopulateTable({ isShowTable: true, TableData: data }))} size="xs" theme={customsubmitTheme} color="success">
                 Applications
-                <Badge className="ms-2 rounded-full px-1.5">{data?.length || 0}</Badge>
+                <Badge className="ms-2 rounded-full px-1.5">{data?.filter((item:any)=>item.empno=="00000000").length || 0}</Badge>
             </Button>}
             <p className="font-thin text-xs self-center">Vhembe</p>
         </Card>
