@@ -14,6 +14,12 @@ export function ApplicationsTable({ data }: { data: any }) {
   // Filter the data based on search input
   const filteredData = useMemo(() => {
     if (!searchQuery) return data;
+    if( searchQuery=="assigned"){
+      return data?.filter((item: any) => item?.empno && item?.empno !== "00000000");
+    }
+    if( searchQuery=="00000000"){
+      return data?.filter((item: any) => item?.empno && item?.empno == "00000000");
+    }
     return data?.filter((item: any) => {
       const regNo = item?.regNo?.toLowerCase() ?? "";
       const appRef = item?.applicationRef?.toLowerCase() ?? "";
@@ -40,17 +46,29 @@ export function ApplicationsTable({ data }: { data: any }) {
   return (
     <div className="overflow-x-auto p-1">
       {/* Search Bar */}
-      <div className="mb-4 max-w-md">
+      <div className="flex flex-wrap items-center gap-2 mb-4 max-w-md">
         <TextInput
         theme={customInputBoxTheme}
           type="text"
-          placeholder="Search by Registration No or Reference No"
+          placeholder="Search by Trade No or Reference No"
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
             setCurrentPage(1); // Reset to first page on search
           }}
         />
+        <Button onClick={()=>{
+          setSearchQuery("");
+          setCurrentPage(1);
+        }} theme={customsubmitTheme} color="success" size="xs">All</Button>
+        <Button onClick={()=>{
+          setSearchQuery("00000000");
+          setCurrentPage(1);
+        }} theme={customsubmitTheme} color="success" size="xs">Un-Assigned</Button>
+        <Button onClick={()=>{
+          setSearchQuery("assigned");
+          setCurrentPage(1);
+        }} theme={customsubmitTheme} color="success" size="xs">Assigned</Button>
       </div>
 
       {/* Table */}
