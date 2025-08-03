@@ -40,12 +40,23 @@ export const POST=async(req:Request)=>{
       }
 
       const { password: _, FileData: __, ...userWithoutPassword } = user;
+
+      
       if(userWithoutPassword.verify_tk!=="verified"){
         return NextResponse.json(
           { message: 'Please verify your email address. check you mail box for verification link' },
           { status: 400 }
         );
       }
+
+      if(user.active!==parseInt("1")){
+        return NextResponse.json(
+          { message: 'Unathorized account access not granted' },
+          { status: 400 }
+        );
+      }
+
+      
       const token = CreateToken(user.user_email);
       return NextResponse.json(
         { message: 'Login successful', user: userWithoutPassword,token },

@@ -45,7 +45,7 @@ const Dashboard = () => {
                     <Waterberg data={data?.Waterberg || []} isLoading={isLoading} />
                   </Suspense>
                 </div>
-                <p className="font-poppinsLight text-sm text-center mt-2">Copyright © 2025 Limpopo Connexion. All rights reserved.</p>
+                <p className="font-poppinsLight text-sm text-center mt-2 dark:text-black">Copyright © 2025 Limpopo Connexion. All rights reserved.</p>
               </div>
 
             </div>

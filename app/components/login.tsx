@@ -42,16 +42,16 @@ const Login = () => {
                         src={ledalogo}
                         alt="leda logo"
                         />
-                    <h2 className="text-lg">Log Into Your Account</h2>
+                    <h2 className="text-lg dark:text-black">Log Into Your Account</h2>
                     <div>
                         <div className="mb-2 block">
-                            <Label htmlFor="email1" >Your Email</Label>
+                            <Label htmlFor="email1" className="dark:text-black" >Your Email</Label>
                         </div>
                         <TextInput onChange={(e:any) => SetUserName(e.target.value)} value={username} theme={customInputBoxTheme} color={"focuscolor"} icon={HiMail} id="email1" type="email" placeholder="name@mailprovider.com" required />
                     </div>
                     <div>
                         <div className="mb-2 block">
-                            <Label htmlFor="password1">
+                            <Label htmlFor="password1" className="dark:text-black">
                             Your password</Label>
                         </div>
                         <TextInput onChange={(e:any) => setPassword(e.target.value)} value={password} theme={customInputBoxTheme} color={"focuscolor"} id="password1" type="password" max={25} maxLength={25} required />
@@ -64,7 +64,7 @@ const Login = () => {
                     <FooterDivider></FooterDivider>
                     <div className="flex justify-between">
                         
-                        <Link href={"/forgotpassword"}>Forgot password?</Link>
+                        <Link className="dark:text-black" href={"/forgotpassword"}>Forgot password?</Link>
                     </div>
 
                 </form>

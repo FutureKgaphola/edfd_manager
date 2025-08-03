@@ -43,6 +43,7 @@ export const POST = async (req: Request) => {
           password VARCHAR(255) NOT NULL,
           phone VARCHAR(10) NOT NULL,
           empno INT NOT NULL UNIQUE,
+          active INT NOT NULL DEFAULT 0,
           districtId INT NOT NULL,
           verify_tk VARCHAR(255) NOT NULL,
           create_date DATETIME NOT NULL DEFAULT GETDATE(),

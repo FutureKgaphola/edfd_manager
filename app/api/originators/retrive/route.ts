@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/app/services/dbConfig";
 import sql from "mssql";
 
-export const GET = async () => {
+export const GET = async (req: Request) => {
   const pool = await connectToDatabase();
 
   try {
     const request = new sql.Request(pool);
+    const url = new URL(req.url);
+    const districtId: string = url.searchParams.get("districtd")?.trim() || "";
 
     // Ensure table exists
     const createTableSQL = `
@@ -27,10 +29,12 @@ export const GET = async () => {
     `;
     await request.query(createTableSQL);
 
-    // Query for all loan originators
+    // Safe parameterized query
+    request.input("districtId", sql.VarChar(100), districtId);
     const result = await request.query(`
       SELECT id, fullnames, empno, email, districtId, create_date
       FROM Originators
+      WHERE districtId = @districtId
       ORDER BY create_date DESC
     `);
 

@@ -79,7 +79,7 @@ export function ApplicationsTable({ data }: { data: any }) {
           <TableHeadCell>Amount</TableHeadCell>
           <TableHeadCell>Loan Type</TableHeadCell>
           <TableHeadCell>Date Received</TableHeadCell>
-          <TableHeadCell>Asigned To</TableHeadCell>
+          <TableHeadCell>Assigned To</TableHeadCell>
           <TableHeadCell>
             <span className="sr-only">Edit</span>
           </TableHeadCell>
@@ -93,10 +93,10 @@ export function ApplicationsTable({ data }: { data: any }) {
               <TableCell>{item?.applicationRef}</TableCell>
               <TableCell>R{Number(item?.amount).toFixed(2)}</TableCell>
               <TableCell>{item?.loanDocs}</TableCell>
-              <TableCell>{ new Date(item?.create_date).toLocaleString()}</TableCell>
+              <TableCell>{item?.create_date ? new Date(item.create_date).toLocaleString() : "—"}</TableCell>
               <TableCell>{item?.empno}</TableCell>
               <TableCell>
-                {item?.empno && item?.empno=="00000000" ? (<Button
+                {item?.empno.trim() && item?.empno.trim()=="00000000" ? (<Button
                   onClick={() =>
                     dispatch(
                       OriginatorSliceAction.PoupUpModal_Originators({
@@ -119,7 +119,7 @@ export function ApplicationsTable({ data }: { data: any }) {
           {/* Empty state */}
           {paginatedData?.length === 0 && (
             <TableRow>
-              <TableCell colSpan={6} className="text-center text-gray-500">
+              <TableCell colSpan={7} className="text-center text-gray-500">
                 No results found.
               </TableCell>
             </TableRow>

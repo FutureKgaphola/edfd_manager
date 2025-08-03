@@ -130,18 +130,18 @@ export default function ForgotPassword() {
                             src={ledalogo}
                             alt="loda logo"
                         />
-                        <h2 className="text-lg font-bold">Send Password Reset</h2>
+                        <h2 className="text-lg font-bold dark:text-black">Send Password Reset</h2>
                         <p className="text-gray-600 font-light">Enter your email address below. We`ll look for your account and send you an OTP(One Time Pin).</p>
                         <div>
                             <div className="mb-2 block">
-                                <Label htmlFor="email1">
+                                <Label className="dark:text-black" htmlFor="email1">
                                     Email
                                     </Label>
                             </div>
                             <TextInput value={email} onChange={(e: any) => setEmail(e.target.value)} theme={customInputBoxTheme} color={"focuscolor"} icon={HiMail} id="email1" type="email" placeholder="name@mailprovider.com" required />
                         </div>
                         <fieldset className="flex max-w-md flex-wrap gap-4">
-                            <legend className="mb-4 font-bold break-words text-wrap text-xs">Received The OTP?</legend>
+                            <legend className="mb-4 font-bold break-words text-wrap text-xs dark:text-black">Received The OTP?</legend>
 
                             <div className="flex items-center gap-2">
                                 <Radio
@@ -151,7 +151,7 @@ export default function ForgotPassword() {
                                     checked={TabChice === "Request OTP"}
                                     onChange={handleChange}
                                 />
-                                <Label htmlFor="requestOTP">Request OTP</Label>
+                                <Label className="dark:text-black" htmlFor="requestOTP">Request OTP</Label>
                             </div>
 
                             <div className="flex items-center gap-2">
@@ -162,7 +162,7 @@ export default function ForgotPassword() {
                                     checked={TabChice === 'I have an OTP'}
                                     onChange={handleChange}
                                 />
-                                <Label htmlFor="I-have-an-OTP">I have an OTP</Label>
+                                <Label className="dark:text-black" htmlFor="I-have-an-OTP">I have an OTP</Label>
                             </div>
                         </fieldset>
                         {
@@ -200,7 +200,7 @@ export default function ForgotPassword() {
 
                         <FooterDivider></FooterDivider>
                         <div className="flex justify-end gap-2">
-                            <p>Done with reset?</p> <Link className="text-appGreen" href={"/"}> Login</Link>
+                            <p className="dark:text-black">Done with reset?</p> <Link className="text-appGreen" href={"/"}> Login</Link>
                         </div>
                     </form>
                 </div>
