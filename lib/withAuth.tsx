@@ -1,8 +1,8 @@
-// lib/withAuth.tsx
+
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation"; // ✅ use `next/navigation` in App Router
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import React from "react";
@@ -31,7 +31,7 @@ export function withAuth<P extends object>(WrappedComponent: React.ComponentType
 
     if (!token) {
         console.log("Redirecting to login page...");
-      return null; // Prevent rendering until redirect happens
+      return null;
     }
 
     return <WrappedComponent {...props} />;
